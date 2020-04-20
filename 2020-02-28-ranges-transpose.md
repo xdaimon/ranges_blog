@@ -105,11 +105,9 @@ for (auto i:intstream)
 Hmmm... I thought `for (auto i : rng);` was equivalent to something that compared begin and end iterators?
 But in the above example, `intstream` cannot have an end iterator!
 From what I've gathered [online](https://stackoverflow.com/q/32900557), a view uses a 'sentinel' in place of an end iterator.
-Basically a sentinel is allowed to have a type different from an iterator and so it does not have to point to a specific element of the range.
-In the example `intstream` could not have an end iterator that points to some element of the underlying range.
-So a comparison function between a sentinel and iterator is not restricted to returning a 'distance'.
+A sentinel is like an end iterator but is allowed to have a type that is not an iterator type.
+By overriding the equality operator between a sentinel and iterator, it is possible to check whether an iterator is at the end of a range without knowing the position of the last element in the range.
 Presumably, view adaptors like `take_while(lambda)` allow you to specify this comparison function directly.
-This also implies that calculating the length of a range, with `rs::distance` may be expensive.
 
 One last note.
 If you write code using range-v3 you may find that the compiler's output is difficult to understand.

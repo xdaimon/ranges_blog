@@ -135,17 +135,17 @@ int main() {
 
   print("------------- Begin/End Fiasco -------------");
   print("Enter integers until you get bored. Then enter something else to exit the loop.");
-  std::cout << "istream_view length:" << rs::distance(rs::istream_view<int>{std::cin}) << std::endl; // O(N)
+  int length = rs::distance(rs::istream_view<int>{std::cin});
+  std::cout << "istream_view length:" << length << std::endl; // O(N)
   std::cin.clear();
   std::cin.ignore(10000,'\n');
-  auto intstream = rs::istream_view<int>{std::cin};
   print("Do it again.");
+  auto intstream = rs::istream_view<int>{std::cin};
   for (auto w:intstream)
     std::cout << "In loop:" << w << std::endl;
   // intstream.end() is a sentenel but instream.begin() is not
   // intstream.end().hello; // uncomment to see the types in the compiler's error output
   // intstream.begin().hello;
-
 
 
 
