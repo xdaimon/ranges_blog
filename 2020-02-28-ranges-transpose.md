@@ -79,10 +79,9 @@ print2D(transpose(W));
 ```
 The inner lambda captures by value because it does not execute until after the rng variable has been destroyed.
 
-Unfortunately, this does not compile. Clang gives errors that suggest `flat` does not satisfy the range concept.
+Unfortunately, this does not compile. Clang gives errors that suggest `flat` does not satisfy the range concept. We can check this directly using a static_assert in the lambda.i
 ```cpp
-const auto bug = ints(0,10) | chunk(2) | join;
-static_assert(!rs::range<decltype(bug)>, "i compile");
+static_assert(!rs::range<decltype(flat)>, "i compile");
 ```
 After some searching I found that the problem is solved by marking the lambda as mutable. Adding the mutable specification causes the lambda to capture as non-const (the default for capture by value is const). I think the compilation error has something to do with join returning an "input_range". An input_range is a type of range that can be iterated over <em>at least</em> once. If we had a const view over an input_range, and the range could be iterated over only a finite number of times, then how would the const view keep track of how many times it has been iterated over? It must keep some internal state and therefore cannot be declared const. This is not much more than a guess though since I have not dived too deep into the library implementation and the documentation is sparse.
 
@@ -110,7 +109,7 @@ By overriding the equality operator between a sentinel and iterator, it is possi
 Presumably, view adaptors like `take_while(lambda)` allow you to specify this comparison function directly.
 
 One last note.
-If you write code using range-v3 you may find that the compiler's output is difficult to understand.
+If you write code using range-v3 you may find that the compiler's error messages are difficult to understand.
 One reason for this is because ranges-v3 emulates concepts through a mixture of macros and template metaprogramming.
 So when things fail, the error messages have to do with things deep in the library's implementation.
 Hopefully std::ranges will be able to make use of non-emulated concepts to fail in a more graceful way.
@@ -124,7 +123,10 @@ Here are a few links I found useful while learning about ranges.
   * [The Surprising Limitations of C++ Ranges Beyond Trivial Cases](https://www.fluentcpp.com/2019/09/13/the-surprising-limitations-of-c-ranges-beyond-trivial-use-cases/)
   * [The Range-v3 User Manual](https://ericniebler.github.io/range-v3/)
 
+
+
 <h1>Extra Stuff</h1>
+
 
 I did not add this example since I am not sure it is a fair comparison.
 
@@ -160,3 +162,4 @@ I did not add this example since I am not sure it is a fair comparison.
     }, X, W);
 
 I also wrote a function with ranges that swaps the first and last dimension of an arbitrary tensor (n dimensional matrix). I did not include it in the rough draft since it is more of the same `drop`,`stride`,`chunk` that I've already shown in `transpose`.
+
