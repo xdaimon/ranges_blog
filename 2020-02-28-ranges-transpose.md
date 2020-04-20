@@ -11,8 +11,8 @@ I'll be using range-v3 because C++20's std::ranges does not include all the view
 All the code in this post is on [godbolt](https://godbolt.org/z/uMmq8f) if you'd like to take a closer look. If you want to compile on your own machine then you can get started with
 ```
 git clone https://github.com/xdaimon/ranges_blog
-git clone https://github.com/ericniebler/range-v3
 cd ranges_blog
+git clone https://github.com/ericniebler/range-v3
 ./build.sh && ./a.out
 ```
 
@@ -160,13 +160,5 @@ I did not add this example since I am not sure it is a fair comparison.
         });
       });
     }, X, W);
-
-
-Here another surprise that range-v3 has to offer. Let me know if you think I should add this to the post.
-```cpp
-auto a = concat(ints(0,15), ints(0,15));
-auto b = repeat_n(ints(0,15), 2);
-std::cout << concat(a,b) << std::endl;
-```
 
 I also wrote a function with ranges that swaps the first and last dimension of an arbitrary tensor (n dimensional matrix). I did not include it in the rough draft since it is more of the same `drop`,`stride`,`chunk` that I've already shown in `transpose`.
